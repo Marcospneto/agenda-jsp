@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import br.com.jvm.agenda.model.dao.AgendaDao;
 import br.com.jvm.agenda.model.entidades.Agenda;
 
-@WebServlet(urlPatterns = { "/AgendaController", "/main", "/salvar", "/select", "/update" })
+@WebServlet(urlPatterns = { "/AgendaController", "/main", "/salvar", "/select", "/update", "/delete" })
 public class AgendaController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	AgendaDao agendaDao = new AgendaDao();
@@ -37,6 +37,8 @@ public class AgendaController extends HttpServlet {
 			listarContato(request, response);
 		} else if (action.equals("/update")) {
 			editarContato(request, response);
+		} else if (action.equals("/delete")) {
+			excluirContato(request, response);
 		} else {
 			response.sendRedirect("index.html");
 		}
@@ -123,42 +125,56 @@ public class AgendaController extends HttpServlet {
 
 	protected void editarContato(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-			
-	/*	//Teste de recebimento
-		System.out.println(request.getParameter("idcon"));
-		System.out.println(request.getParameter("nome"));
-		System.out.println(request.getParameter("fone"));
-		System.out.println(request.getParameter("email")); */
-		
-		//Recebimento do id do contato como string
+
+		/*
+		 * //Teste de recebimento System.out.println(request.getParameter("idcon"));
+		 * System.out.println(request.getParameter("nome"));
+		 * System.out.println(request.getParameter("fone"));
+		 * System.out.println(request.getParameter("email"));
+		 */
+
+		// Recebimento do id do contato como string
 		String idconStr = request.getParameter("idcon");
-		//Converter a String em Long
+		// Converter a String em Long
 		Long idcon = null;
 		try {
 			idcon = Long.parseLong(idconStr);
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		
-		
-		//Setar as variáveis Agenda
+
+		// Setar as variáveis Agenda
 		contato.setId(idcon);
 		contato.setNome(request.getParameter("nome"));
 		contato.setFone(request.getParameter("fone"));
 		contato.setEmail(request.getParameter("email"));
-		//Executar o metodo alterar contato
-	    agendaDao.alterarContato(contato);
-	    //Redirecionar para o documento agenda.jsp (Atualizando as alterações)
-	    response.sendRedirect("main");
-		
-		
-	
-	
-	
-	
-	
-	
-	
-}
+		// Executar o metodo alterar contato
+		agendaDao.alterarContato(contato);
+		// Redirecionar para o documento agenda.jsp (Atualizando as alterações)
+		response.sendRedirect("main");
+
+	}
+
+	protected void excluirContato(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// Recebimento do id do contato a ser excluido (validador.js)
+		String idconStr = request.getParameter("id");
+		Long idcon = null;
+		try {
+			idcon = Long.parseLong(idconStr);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		// setar a variável id Agenda
+		contato.setId(idcon);
+
+		// executar o método deletarContato (DAO) passando o objeto contato
+		agendaDao.excluirContato(contato);
+
+		// Redirecionar para o documento agenda.jsp (Atualizando as alterações)
+		response.sendRedirect("main");
+
+	}
 
 }

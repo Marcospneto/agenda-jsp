@@ -129,5 +129,18 @@ public class AgendaDao {
 		}
 		
 	}
+	//CRUD DELETE
+	public void excluirContato(Agenda contato) {
+		String delete = "delete from contatos where idcon = ?";
+		try {
+			Connection con = conectar();
+			PreparedStatement pst = con.prepareStatement(delete);
+			pst.setLong(1, contato.getId());
+			pst.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
 
 }
