@@ -87,4 +87,47 @@ public class AgendaDao {
 			return null;
 		}
 	}
+
+	// CRUD UPDATE
+	// selecionar contato
+	public void selecionarContato(Agenda contato) {
+		String read2 = "select * from contatos where idcon = ?";
+		try {
+			Connection con = conectar();
+			PreparedStatement pst = con.prepareStatement(read2);
+			pst.setLong(1, contato.getId());
+			// classe do jdbc
+			ResultSet rs = pst.executeQuery();
+			while (rs.next()) {
+				// Setar as variáveis Agenda
+				contato.setId(rs.getLong(1));
+				contato.setNome(rs.getString(2));
+				contato.setFone(rs.getString(3));
+				contato.setEmail(rs.getString(4));
+			}
+			con.close();
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+	//Editar o contato
+	public void alterarContato(Agenda contato) {
+		
+		String create = "update contatos set nome=?, fone=?, email=? where idcon=?";
+		try {
+			Connection con = conectar();
+			PreparedStatement pst = con.prepareStatement(create);
+			pst.setString(1, contato.getNome());
+			pst.setString(2, contato.getFone());
+			pst.setString(3, contato.getEmail());
+			pst.setLong(4, contato.getId());
+			pst.executeUpdate();
+			con.close();
+			
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+	}
+
 }
